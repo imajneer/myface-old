@@ -22,6 +22,7 @@ export class MyApp {
 
   storage :any;
   user: any;
+  photos : Array<any>;
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, public amplifyService: AmplifyService, private photoLibrary: PhotoLibrary) {
     this.initializeApp();
 
@@ -47,7 +48,7 @@ export class MyApp {
       // this.signupUser();
       // this.confirmUser();
       this.signInUser();
-      this.getPhotoAuth();
+      // this.getPhotoAuth();
       // this.getPhotos();
 
     });
@@ -60,6 +61,9 @@ export class MyApp {
   }
 
   getPhotos() {
+    let photoArr :Array<any> = [];
+    let storage = this.amplifyService.storage();
+    storage.configure({level: 'private'});
     this.photoLibrary.getLibrary().subscribe({
       next: library => {
         library.forEach(function(libraryItem) {
@@ -73,10 +77,22 @@ export class MyApp {
           console.log(libraryItem.latitude);
           console.log(libraryItem.longitude);
           console.log(libraryItem.albumIds);    // array of ids of appropriate AlbumItem, only of includeAlbumsData was used
+          photoArr.push(libraryItem);
         });
       },
       error: err => { console.log('could not get photos'); },
-      complete: () => { console.log('done getting photos'); }
+      complete: () => {
+        console.log('done getting photos:' + photoArr.length);
+        this.photoLibrary.getPhoto(photoArr[2])
+          .then(photo =>
+          {
+            storage.put(photoArr[2].fileName,photo)
+              .then (result => console.log(result))
+              .catch(err => console.log(err));;
+          })
+          .catch(err => console.log(err));
+
+      }
     });
   }
 
@@ -85,6 +101,7 @@ export class MyApp {
       .then(user => {
         console.log(user);
         this.user = user;
+        this.getPhotos();
       })
       .catch(err => console.log(err));
   }
