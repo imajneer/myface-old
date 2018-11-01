@@ -1,0 +1,9 @@
+{
+    "bucketName": "myface264011386d4a41f082e7f6b6c4be9ad3",
+    "authPolicyName": "s3_amplify_d3808696",
+    "unauthPolicyName": "s3_amplify_d3808696",
+    "authRoleName": "yace-20181101111111-authRole",
+    "unauthRoleName": "yace-20181101111111-unauthRole",
+    "authPermissions": "rw",
+    "unauthPermissions": "rw"
+}
