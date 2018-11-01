@@ -11,6 +11,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { AmplifyAngularModule, AmplifyService } from 'aws-amplify-angular';
 
+import { PhotoLibrary} from "@ionic-native/photo-library";
 
 
 @NgModule({
@@ -34,6 +35,7 @@ import { AmplifyAngularModule, AmplifyService } from 'aws-amplify-angular';
     StatusBar,
     SplashScreen,
     AmplifyService,
+    PhotoLibrary,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

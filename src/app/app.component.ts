@@ -8,6 +8,8 @@ import { ListPage } from '../pages/list/list';
 
 import { AmplifyService } from 'aws-amplify-angular';
 
+import { PhotoLibrary } from '@ionic-native/photo-library';
+
 @Component({
   templateUrl: 'app.html'
 })
@@ -20,10 +22,11 @@ export class MyApp {
 
   storage :any;
   user: any;
-  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, public amplifyService: AmplifyService) {
+  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, public amplifyService: AmplifyService, private photoLibrary: PhotoLibrary) {
     this.initializeApp();
 
     this.amplifyService = amplifyService;
+    this.photoLibrary = this.photoLibrary;
     // used for an example of ngFor and navigation
     this.pages = [
       { title: 'Home', component: HomePage },
@@ -44,6 +47,36 @@ export class MyApp {
       // this.signupUser();
       // this.confirmUser();
       this.signInUser();
+      this.getPhotoAuth();
+      // this.getPhotos();
+
+    });
+  }
+  getPhotoAuth() {
+    this.photoLibrary.requestAuthorization().then(() => {
+      this.getPhotos();
+    })
+      .catch(err => console.log('permissions weren\'t granted'));
+  }
+
+  getPhotos() {
+    this.photoLibrary.getLibrary().subscribe({
+      next: library => {
+        library.forEach(function(libraryItem) {
+          console.log(libraryItem.id);          // ID of the photo
+          console.log(libraryItem.photoURL);    // Cross-platform access to photo
+          console.log(libraryItem.thumbnailURL);// Cross-platform access to thumbnail
+          console.log(libraryItem.fileName);
+          console.log(libraryItem.width);
+          console.log(libraryItem.height);
+          console.log(libraryItem.creationDate);
+          console.log(libraryItem.latitude);
+          console.log(libraryItem.longitude);
+          console.log(libraryItem.albumIds);    // array of ids of appropriate AlbumItem, only of includeAlbumsData was used
+        });
+      },
+      error: err => { console.log('could not get photos'); },
+      complete: () => { console.log('done getting photos'); }
     });
   }
 
